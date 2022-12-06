@@ -1,101 +1,69 @@
-import pygame
-from pygame.locals import *
+import pygame as pg
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from Vector import Vector3d
-from math import *
+from OpenGL.GL.shaders import compileProgram, compileShader
+from Triangle import Triangle
 
+#The Graphics Engine that will Render Objects using the OpenGL API
+class Engine:
 
-def main():
+    #Constructor
+    def __init__(self):
 
-    #Create a Window
-    pygame.init()
-    display = (800,600)
-    win = pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
-    w, h = win.get_size()
-    ratio =  w * 1.0 / h
-    glMatrixMode(GL_PROJECTION)
-    gluPerspective(45.0, ratio, 0.1, 100.0)
-    glMatrixMode(GL_MODELVIEW)
+        #Initialize Pygame
+        pg.init()
+        pg.display.set_mode((640, 480), pg.OPENGL | pg.DOUBLEBUF)
+        self.clock = pg.time.Clock()
 
-    #Create Environment Lighting
-    glLight(GL_LIGHT0, GL_POSITION,  (5, 5, 5, 1))
-    glLightfv(GL_LIGHT0, GL_AMBIENT, (0, 0, 0, 1))
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, (1, 1, 1, 1))
+        #Initialize OpenGL
+        glClearColor(0.1, 0.2, 0.2, 1)
+        self.shader = self.createShader("Shaders/Vertex.txt", "Shaders/fragment.txt")
+        glUseProgram(self.shader)
+        self.triangle = Triangle()
+        self.mainLoop()
 
-    #Enable Depth Test for 3D Environent 
-    glEnable(GL_DEPTH_TEST)
+    #Create the Shader that will be used for the Engine
+    def createShader(self, vertexFilePath, fragmentFilePath):
 
-    #Camera Positional and Rotational Data
-    player_pos, player_rot = Vector3d(), Vector3d()
-    UP, DOWN, LEFT, RIGHT = Vector3d(0.0, 0.0, 0.1), Vector3d(0.0, 0.0, -0.1), Vector3d(0.1, 0.0, 0.0), Vector3d(-0.1, 0.0, 0.0)
-    
+        with open(vertexFilePath, 'r') as f:
+            vertex_sc = f.readlines()
 
-    #Simulation Loop
-    while True:
+        with open(fragmentFilePath, 'r') as f:
+            fragment_src = f.readlines()
 
-        #Perform input event performed by the User
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+        shader = compileProgram(compileShader(vertex_sc,GL_VERTEX_SHADER), compileShader(fragment_src, GL_FRAGMENT_SHADER))
 
-        #Set and Intialize the keys variables that stores all keys
-        keys = pygame.key.get_pressed()
+        return shader
 
-        #Kill Program if ESCAPE or Q Buttons are pressed
-        if keys[K_ESCAPE] or keys[K_q]:
-            pygame.quit()
-            quit()
+    #Run the Engine
+    def mainLoop(self):
+        run = 1
+        while run:
 
-        #Move Left
-        if keys[K_LEFT]:
-            player_pos += LEFT
-            glTranslate(LEFT.getX(), LEFT.getY(), LEFT.getZ())
+            #Check if GIANT RED "X" BUTTON has been pressed
+            for event in pg.event.get():
+                if(event.type == pg.quit):
+                    run = 0
 
-        #Move Right
-        if keys[K_RIGHT]:
-            player_pos += RIGHT
-            glTranslate(RIGHT.getX(), RIGHT.getY(), RIGHT.getZ())
+            #Refresh the Screen
+            glClear(GL_COLOR_BUFFER_BIT)
 
-        #Move Up
-        if keys[K_UP]:
-            player_pos += UP
-            glTranslate(UP.getX(), UP.getY(), UP.getZ())
+            glUseProgram(self.shader)
+            glBindVertexArray(self.triangle.vao)
+            glDrawArrays(GL_TRIANGLES, 0, self.triangle.vertex_count)
 
-        #Move Down
-        if keys[K_DOWN]:
-            player_pos += DOWN
-            glTranslate(DOWN.getX(), DOWN.getY(), DOWN.getZ())
+            pg.display.flip()
 
-        #Rotate Left
-        if keys[K_a]:
-            glRotate(-1, 0, 1, 0)
-        
-        #Rotate Right
-        if keys[K_d]:
-            glRotate(1, 0, 1, 0)
+            #timing
+            self.clock.tick(60)
+        self.quit()
 
-        #Set Simulation Background
-        glClearColor(1, 1, 1, 1)
+    #Kill the Engine
+    def quit(self):
+        self.triangle.destroy()
+        glDeleteProgram(self.shader)
+        pg.quit()
 
-        #Render the Environment
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        glEnable(GL_LIGHTING)
-        glEnable(GL_LIGHT0)
-        glEnable(GL_COLOR_MATERIAL)
-        glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE )
-
-        #Scene Geometry
-
-        #Disable Lighting
-        glDisable(GL_LIGHT0)
-        glDisable(GL_LIGHTING)
-        glDisable(GL_COLOR_MATERIAL)
-
-        #Tick Environment
-        pygame.display.flip()
-        pygame.time.wait(10)
-
-
-main()
+#If set as Start-up File, Start Engine
+if __name__ == '__main__':
+    world = Engine()
