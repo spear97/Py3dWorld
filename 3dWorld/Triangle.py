@@ -1,4 +1,3 @@
-import pygame as pg
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import numpy as np
@@ -12,9 +11,9 @@ class Triangle:
         #Vertices that will make up the Triangle
         #Categorized by: x, y, z, r, g, b
         self.verticies = (
-            -0.5, -0.5, 0.0, 1.0, 0.0, 0.0,
-            0.5, -0.5, 0.0, 0.0, 1.0, 0.0,
-            0.0, 0.5, 0.0, 0.0, 0.0, 1.0
+            -0.5, -0.5, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
+            0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+            0.0, 0.5, 0.0, 0.0, 0.0, 1.0, 0.5, 0.0
             )
 
         #Converting verticies from a tuple to an array using numpy
@@ -36,9 +35,12 @@ class Triangle:
 
         #Enable and Load Fragment Shaders
         glEnableVertexAttribArray(0)
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(0))
         glEnableVertexAttribArray(1)
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
+        glEnableVertexAttribArray(2)
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(24))
+
 
 
     #Destructor for the Triangle - for data to be removed from Graphics Card

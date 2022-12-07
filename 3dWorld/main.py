@@ -3,6 +3,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 from Triangle import Triangle
+from Material import Material
 
 #The Graphics Engine that will Render Objects using the OpenGL API
 class Engine:
@@ -17,9 +18,16 @@ class Engine:
 
         #Initialize OpenGL
         glClearColor(0.1, 0.2, 0.2, 1)
-        self.shader = self.createShader("Shaders/Vertex.txt", "Shaders/fragment.txt")
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        self.shader = self.createShader("Shaders/Vertex.txt", "Shaders/Fragment.txt")
         glUseProgram(self.shader)
+        glUniform1i(glGetUniformLocation(self.shader, "imageTexture"), 0)
         self.triangle = Triangle()
+        self.barbatos_texture = Material("Images/Barbatos.png")
+        self.dallas_texture = Material("Images/DallasSkyLine.png")
+
+
         self.mainLoop()
 
     #Create the Shader that will be used for the Engine
@@ -49,6 +57,7 @@ class Engine:
             glClear(GL_COLOR_BUFFER_BIT)
 
             glUseProgram(self.shader)
+            self.barbatos_texture.use()
             glBindVertexArray(self.triangle.vao)
             glDrawArrays(GL_TRIANGLES, 0, self.triangle.vertex_count)
 
@@ -61,6 +70,7 @@ class Engine:
     #Kill the Engine
     def quit(self):
         self.triangle.destroy()
+        self.barbatos_texture.destory()
         glDeleteProgram(self.shader)
         pg.quit()
 

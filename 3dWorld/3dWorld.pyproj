@@ -22,15 +22,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="main.py" />
+    <Compile Include="Material.py" />
     <Compile Include="Triangle.py" />
     <Compile Include="Vector.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Images\" />
     <Folder Include="Shaders\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Shaders\fragment.txt" />
+    <Content Include="images\Barbatos.png" />
+    <Content Include="images\DallasSkyLine.png" />
+    <Content Include="Shaders\Fragment.txt" />
     <Content Include="Shaders\Vertex.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
