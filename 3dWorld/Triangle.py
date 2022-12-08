@@ -9,7 +9,7 @@ class Triangle:
     def __init__(self):
         
         #Vertices that will make up the Triangle
-        #Categorized by: x, y, z, r, g, b
+        #Categorized by: x, y, z, r, g, b, s, t
         self.verticies = (
             -0.5, -0.5, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
             0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0,

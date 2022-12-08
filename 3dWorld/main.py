@@ -4,6 +4,9 @@ from OpenGL.GLU import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 from Triangle import Triangle
 from Material import Material
+from Cube import CubeMesh, Cube
+import numpy as np
+import pyrr
 
 #The Graphics Engine that will Render Objects using the OpenGL API
 class Engine:
@@ -19,14 +22,22 @@ class Engine:
         #Initialize OpenGL
         glClearColor(0.1, 0.2, 0.2, 1)
         glEnable(GL_BLEND)
+        glEnable(GL_DEPTH_TEST)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         self.shader = self.createShader("Shaders/Vertex.txt", "Shaders/Fragment.txt")
         glUseProgram(self.shader)
         glUniform1i(glGetUniformLocation(self.shader, "imageTexture"), 0)
-        self.triangle = Triangle()
+        self.cube = Cube(position=[0,0,-3], eulers=[0,0,0])
+        self.cube_mesh = CubeMesh()
+
+        #Define Textures that are going to be used
         self.barbatos_texture = Material("Images/Barbatos.png")
         self.dallas_texture = Material("Images/DallasSkyLine.png")
 
+        #Transformations
+        projection_transform = pyrr.matrix44.create_perspective_projection(fovy=45, aspect=640/480, near=0.1, far=10, dtype=np.float32)
+        glUniformMatrix4fv(glGetUniformLocation(self.shader, "projection"), 1, GL_FALSE, projection_transform)
+        self.modelMatrixLocation = glGetUniformLocation(self.shader, "model")
 
         self.mainLoop()
 
@@ -45,21 +56,44 @@ class Engine:
 
     #Run the Engine
     def mainLoop(self):
-        run = 1
+        run = True
         while run:
 
             #Check if GIANT RED "X" BUTTON has been pressed
             for event in pg.event.get():
                 if(event.type == pg.quit):
-                    run = 0
+                    run = False
+
+            #Calclate Cube Rotation
+            self.cube.eulers[2] += 0.2
+            if (self.cube.eulers[2] > 360):
+                self.cube.eulers[2] -= 360
 
             #Refresh the Screen
-            glClear(GL_COLOR_BUFFER_BIT)
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
+            #Apply Texture to Shape
             glUseProgram(self.shader)
             self.barbatos_texture.use()
-            glBindVertexArray(self.triangle.vao)
-            glDrawArrays(GL_TRIANGLES, 0, self.triangle.vertex_count)
+
+            #Create Model Transform
+            model_transform = pyrr.matrix44.create_identity(dtype=np.float32)
+
+            '''
+            Rotate then Move, if you wanna keep it on same origin-Axis
+            '''
+
+            #Rotate Cube 
+            model_transform = pyrr.matrix44.multiply(m1=model_transform, m2=pyrr.matrix44.create_from_eulers(eulers=np.radians(self.cube.eulers), dtype=np.float32))
+            
+            #Set Cube to it Position
+            model_transform = pyrr.matrix44.multiply(m1=model_transform, m2=pyrr.matrix44.create_from_translation(vec=self.cube.position,dtype=np.float32))
+            
+            #Upload Cube's Transform
+            glUniformMatrix4fv(self.modelMatrixLocation, 1, GL_FALSE, model_transform)
+
+            glBindVertexArray(self.cube_mesh.vao)
+            glDrawArrays(GL_TRIANGLES, 0, self.cube_mesh.vertex_count)
 
             pg.display.flip()
 
@@ -69,7 +103,7 @@ class Engine:
 
     #Kill the Engine
     def quit(self):
-        self.triangle.destroy()
+        self.cube_mesh.destroy()
         self.barbatos_texture.destory()
         glDeleteProgram(self.shader)
         pg.quit()
