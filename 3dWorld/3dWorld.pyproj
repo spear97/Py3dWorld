@@ -24,6 +24,7 @@
     <Compile Include="Cube.py" />
     <Compile Include="main.py" />
     <Compile Include="Material.py" />
+    <Compile Include="Mesh.py" />
     <Compile Include="Triangle.py" />
     <Compile Include="Vector.py" />
   </ItemGroup>
@@ -35,6 +36,8 @@
   <ItemGroup>
     <Content Include="images\Barbatos.png" />
     <Content Include="images\DallasSkyLine.png" />
+    <Content Include="Models\Cube.mtl" />
+    <Content Include="Models\Cube.obj" />
     <Content Include="Shaders\Fragment.txt" />
     <Content Include="Shaders\Vertex.txt" />
   </ItemGroup>

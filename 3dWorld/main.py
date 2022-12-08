@@ -2,9 +2,10 @@ import pygame as pg
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GL.shaders import compileProgram, compileShader
-from Triangle import Triangle
-from Material import Material
-from Cube import CubeMesh, Cube
+from Triangle import *
+from Material import *
+from Cube import *
+from Mesh import *
 import numpy as np
 import pyrr
 
@@ -27,8 +28,9 @@ class Engine:
         self.shader = self.createShader("Shaders/Vertex.txt", "Shaders/Fragment.txt")
         glUseProgram(self.shader)
         glUniform1i(glGetUniformLocation(self.shader, "imageTexture"), 0)
-        self.cube = Cube(position=[0,0,-3], eulers=[0,0,0])
-        self.cube_mesh = CubeMesh()
+        self.cube = Cube(position=[0,0,-5], eulers=[0,0,0])
+        #self.cube_mesh = CubeMesh()
+        self.mesh = Mesh('Models/Cube.obj')
 
         #Define Textures that are going to be used
         self.barbatos_texture = Material("Images/Barbatos.png")
@@ -92,8 +94,8 @@ class Engine:
             #Upload Cube's Transform
             glUniformMatrix4fv(self.modelMatrixLocation, 1, GL_FALSE, model_transform)
 
-            glBindVertexArray(self.cube_mesh.vao)
-            glDrawArrays(GL_TRIANGLES, 0, self.cube_mesh.vertex_count)
+            glBindVertexArray(self.mesh.vao)
+            glDrawArrays(GL_TRIANGLES, 0, self.mesh.vertex_count)
 
             pg.display.flip()
 
@@ -103,7 +105,7 @@ class Engine:
 
     #Kill the Engine
     def quit(self):
-        self.cube_mesh.destroy()
+        self.mesh.destroy()
         self.barbatos_texture.destory()
         glDeleteProgram(self.shader)
         pg.quit()

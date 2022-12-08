@@ -84,9 +84,6 @@ class CubeMesh:
         glEnableVertexAttribArray(1)
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
 
-
-
-
     #Destructor for the Triangle - for data to be removed from Graphics Card
     def destroy(self):
         glDeleteVertexArrays(1, (self.vao))
