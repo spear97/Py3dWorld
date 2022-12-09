@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>32304e3a-018a-4177-a81c-419ee3158d3e</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>main.py</StartupFile>
+    <StartupFile>Main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,9 +22,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Cube.py" />
-    <Compile Include="main.py" />
+    <Compile Include="GraphicsEngine.py" />
+    <Compile Include="Main.py" />
     <Compile Include="Material.py" />
     <Compile Include="Mesh.py" />
+    <Compile Include="Player.py" />
+    <Compile Include="Scene.py" />
     <Compile Include="Triangle.py" />
     <Compile Include="Vector.py" />
   </ItemGroup>
@@ -38,6 +41,8 @@
     <Content Include="images\DallasSkyLine.png" />
     <Content Include="Models\Cube.mtl" />
     <Content Include="Models\Cube.obj" />
+    <Content Include="Models\Sphere.mtl" />
+    <Content Include="Models\Sphere.obj" />
     <Content Include="Shaders\Fragment.txt" />
     <Content Include="Shaders\Vertex.txt" />
   </ItemGroup>
