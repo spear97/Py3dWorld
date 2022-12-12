@@ -29,7 +29,6 @@
     <Compile Include="Player.py" />
     <Compile Include="Scene.py" />
     <Compile Include="Triangle.py" />
-    <Compile Include="Vector.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

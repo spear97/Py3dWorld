@@ -3,10 +3,10 @@ from OpenGL.GLU import *
 import numpy as np
 import ctypes
 
-
-
+#Render a Cube Completely from Scratch
 class CubeMesh:
-
+    
+    #Constructor
     def __init__(self):
         
         #Vertices that will make up the Triangle
@@ -89,9 +89,10 @@ class CubeMesh:
         glDeleteVertexArrays(1, (self.vao))
         glDeleteBuffers(1, (self.vbo))
 
+#Store a Location and rotation for a Given 3D Object
 class Cube:
 
-
+    #Constructor
     def __init__(self, position, eulers):
 
         self.position = np.array(position, dtype=np.float32)

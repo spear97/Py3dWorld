@@ -4,7 +4,7 @@ import numpy as np
 import ctypes
 
 
-#Render a Triangle in OpenGL
+#Render a Triangle in OpenGL from Scratch
 class Triangle:
     def __init__(self):
         
