@@ -1,5 +1,6 @@
 from Cube import Cube
 from Player import Player
+from Light import Light
 import numpy as np
 
 #The 3d Environemtn where 3d Objects will be rendered
@@ -14,6 +15,14 @@ class Scene:
                 position = [6,0,0],
                 eulers = [0,0,0]
             )
+        ]
+
+        self.lights = [
+            Light(
+                position =[4, 0, 2],
+                color =[1, 1, 1],
+                strength=5
+                )
         ]
 
         #The Player that will navigate the environment

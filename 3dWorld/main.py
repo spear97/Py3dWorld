@@ -82,22 +82,6 @@ class Program:
 
         #The current Frame that the program is one
         self.frameTime = 0
-
-        #A dictionary of movment directions that will Determine which direction the player will move towards
-        self.walk_offset_lookup = {
-            1: 0,
-            2: 90,
-            3: 45,
-            4: 180,
-            6: 135,
-            7: 90,
-            8: 270,
-            9: 315,
-            11: 0,
-            12: 225,
-            13: 270,
-            14: 180
-        }
         
         #Run the Program
         self.mainLoop()
@@ -136,9 +120,9 @@ class Program:
 
     def handleKeys(self):
 
+        combo = 0
+        directionModifier = 0
         """
-        How Player will move about the Environment:
-        ------------------------------------------
         w: 1 -> 0 degrees
         a: 2 -> 90 degrees
         w & a: 3 -> 45 degrees
@@ -154,45 +138,43 @@ class Program:
         w & s & d: 13 -> 270 degrees
         a & s & d: 14 -> 180 degrees
         w & a & s & d: 15 -> x
-        ------------------------------------------
         """
 
-        #Determine which Direction the Player will move in
-        combo = 0
-
-        #The Direction that the Player will Move in
-        directionModifier = 0
-
-        #Move Player Forward
+        #Caclute the Combo that will determine the direction the Player will move towards
         if glfw.get_key(self.window, GLFW_CONSTANTS.GLFW_KEY_W) == GLFW_CONSTANTS.GLFW_PRESS:
             combo += 1
-
-        #Move Player Left
         if glfw.get_key(self.window, GLFW_CONSTANTS.GLFW_KEY_A) == GLFW_CONSTANTS.GLFW_PRESS:
             combo += 2
-
-        #Move Player Backward
         if glfw.get_key(self.window, GLFW_CONSTANTS.GLFW_KEY_S) == GLFW_CONSTANTS.GLFW_PRESS:
             combo += 4
-
-        #Move Player Right
         if glfw.get_key(self.window, GLFW_CONSTANTS.GLFW_KEY_D) == GLFW_CONSTANTS.GLFW_PRESS:
             combo += 8
         
-        #Update Direction if there is a change in direction
-        if combo in self.walk_offset_lookup:
-
-            #Set directionModifer to the direction as determined by user input
-            directionModifier = self.walk_offset_lookup[combo]
-
-            #Calculate the Vector Position
+        #Move towards calculated direction, assuming that Combo is a number that is greater than 0
+        if combo > 0:
+            if combo == 3:
+                directionModifier = 45
+            elif combo == 2 or combo == 7:
+                directionModifier = 90
+            elif combo == 6:
+                directionModifier = 135
+            elif combo == 4 or combo == 14:
+                directionModifier = 180
+            elif combo == 12:
+                directionModifier = 225
+            elif combo == 8 or combo == 13:
+                directionModifier = 270
+            elif combo == 9:
+                directionModifier = 315
+            
+            #Calculate the Position that Player will move to 
             dPos = [
-                self.movespeed * self.frameTime / 16.7 * np.cos(np.deg2rad(self.scene.player.theta + directionModifier)),
-                self.movespeed * self.frameTime / 16.7 * np.sin(np.deg2rad(self.scene.player.theta + directionModifier)),
+                self.frameTime * 0.025 * np.cos(np.deg2rad(self.scene.player.theta + directionModifier)),
+                self.frameTime * 0.025 * np.sin(np.deg2rad(self.scene.player.theta + directionModifier)),
                 0
             ]
 
-            #Move Player toward Vector Position
+            #Move Player
             self.scene.move_player(dPos)
 
     #Get the Mouse Input of the Player

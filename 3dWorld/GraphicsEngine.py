@@ -20,7 +20,7 @@ class Engine:
         self.cube_mesh = Mesh("Models/Cube.obj")
 
         #The Backgroudn Color of the Program that being rendered
-        glClearColor(0.1, 0.2, 0.2, 1)
+        glClearColor(0.0, 0.0, 0.0, 1)
 
         #Intialize Shader that will be used for the Graphics Engine for the Program
         self.shader = self.createShader("shaders/vertex.txt", "shaders/fragment.txt")
@@ -51,6 +51,23 @@ class Engine:
 
         #Make viewlMatrixLocation Uniform
         self.viewMatrixLocation = glGetUniformLocation(self.shader,"view")
+
+        #Make the LIght used by the Graphics Engine Uniform
+        self.lightLocation = {
+            "position": [
+                glGetUniformLocation(self.shader, f"Lights[{i}].position")
+                for i in range(8)
+            ],
+            "color": [
+                glGetUniformLocation(self.shader, f"Lights[{i}].color")
+                for i in range(8)
+            ],
+            "strength": [
+                glGetUniformLocation(self.shader, f"Lights[{i}].strength")
+                for i in range(8)
+            ]
+        }
+        self.cameraPosLoc = glGetUniformLocation(self.shader, "cameraPostion")
 
     #Create the Shader that will be used for the Engine
     def createShader(self, vertexFilepath, fragmentFilepath):
@@ -86,45 +103,40 @@ class Engine:
             up = scene.player.up, dtype=np.float32
         )
 
-        #Make the View Transform Uniform
+        #Make the viewMatrixLocation Uniform
         glUniformMatrix4fv(self.viewMatrixLocation, 1, GL_FALSE, view_transform)
 
-        #Use the Gundam Texture to be applied to all 3d Objects in the Environment
-        self.gundam_texture.use()
+        #Enumerate through all lights that exist in the scene
+        for i,light in enumerate(scene.lights):
+            glUniform3fv(self.lightLocation["position"][i], 1, light.position)
+            glUniform3fv(self.lightLocation["color"][i], 1, light.color)
+            glUniform1f(self.lightLocation["strength"][i], light.strength)
 
-        #Tell the render to use the 3d Object Vertex Array Object
-        glBindVertexArray(self.cube_mesh.vao)
+        #Make the cameraPosLocation Uniform
+        glUniform3fv(self.cameraPosLoc, 1, scene.player.position)
 
-        #Render all Objects in the Environment
+        #Render all Objects that exist in the environment
         for cube in scene.cubes:
 
-            #Initialize the Object's Transform
             model_transform = pyrr.matrix44.create_identity(dtype=np.float32)
-
-            #Multiply the Object's Transform by a newly intialized Euler Rotation Matrix
             model_transform = pyrr.matrix44.multiply(
                 m1=model_transform, 
                 m2=pyrr.matrix44.create_from_eulers(
                     eulers=np.radians(cube.eulers), dtype=np.float32
                 )
             )
-
-            #Multiply the Object's Transform by a newly intialized Translation Matrix
             model_transform = pyrr.matrix44.multiply(
                 m1=model_transform, 
                 m2=pyrr.matrix44.create_from_translation(
                     vec=np.array(cube.position),dtype=np.float32
                 )
             )
-
-            #Make the Model_Transform more uniform
             glUniformMatrix4fv(self.modelMatrixLocation,1,GL_FALSE,model_transform)
-
-            #Render the Object into the Environment
+            self.gundam_texture.use()
+            glBindVertexArray(self.cube_mesh.vao)
             glDrawArrays(GL_TRIANGLES, 0, self.cube_mesh.vertex_count)
 
-        #Empty the stored buffers
-        glFlush()
+            glFlush()
 
     #Kill the Engine
     def quit(self):
