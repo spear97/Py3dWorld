@@ -19,9 +19,9 @@ class Scene:
 
         self.lights = [
             Light(
-                position =[4, 0, 2],
-                color =[1, 1, 1],
-                strength=5
+                position = [4, 0, 2],
+                color = [1, 1, 1],
+                strength=3
                 )
         ]
 
