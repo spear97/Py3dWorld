@@ -19,8 +19,11 @@ class Engine:
         #Initialize cube_Mesh as a Cube that was created using Blender
         self.cube_mesh = Mesh("Models/Cube.obj")
 
+        #Initialize plane_mesh as a Plane that was created using Blender
+        self.plane_mesh = Mesh("Models/Plane.obj")
+
         #The Backgroudn Color of the Program that being rendered
-        glClearColor(0.0, 0.0, 0.0, 1)
+        glClearColor(1.0, 1.0, 1.0, 1)
 
         #Intialize Shader that will be used for the Graphics Engine for the Program
         self.shader = self.createShader("shaders/vertex.txt", "shaders/fragment.txt")
@@ -52,7 +55,7 @@ class Engine:
         #Make viewlMatrixLocation Uniform
         self.viewMatrixLocation = glGetUniformLocation(self.shader,"view")
 
-        #Make the LIght used by the Graphics Engine Uniform
+        #Make the Light used by the Graphics Engine Uniform
         self.lightLocation = {
             "position": [
                 glGetUniformLocation(self.shader, f"Lights[{i}].position")
