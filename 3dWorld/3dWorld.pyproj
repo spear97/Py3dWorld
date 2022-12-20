@@ -21,7 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Cube.py" />
+    <Compile Include="Parameters.py" />
     <Compile Include="GraphicsEngine.py" />
     <Compile Include="Light.py" />
     <Compile Include="Main.py" />
@@ -40,8 +40,6 @@
     <Content Include="images\DallasSkyLine.png" />
     <Content Include="Models\Cube.mtl" />
     <Content Include="Models\Cube.obj" />
-    <Content Include="Models\Plane.mtl" />
-    <Content Include="Models\Plane.obj" />
     <Content Include="Models\Sphere.mtl" />
     <Content Include="Models\Sphere.obj" />
     <Content Include="Shaders\Fragment.txt" />

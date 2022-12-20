@@ -4,7 +4,6 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 import pyrr
-import pygame as pg
 import numpy as np
 
 #Engine that will handle the Rendering of 3d Object in the 3d Environment
@@ -18,9 +17,6 @@ class Engine:
 
         #Initialize cube_Mesh as a Cube that was created using Blender
         self.cube_mesh = Mesh("Models/Cube.obj")
-
-        #Initialize plane_mesh as a Plane that was created using Blender
-        self.plane_mesh = Mesh("Models/Plane.obj")
 
         #The Backgroudn Color of the Program that being rendered
         glClearColor(1.0, 1.0, 1.0, 1)
@@ -93,7 +89,7 @@ class Engine:
     #Render 3D Objects in the Environment
     def render(self, scene):
 
-        #refresh screen
+        #Refresh screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         #Set the Shader that will be used
@@ -119,36 +115,46 @@ class Engine:
         glUniform3fv(self.cameraPosLoc, 1, scene.player.position)
 
         #Render all Objects that exist in the environment
-        for cube in scene.cubes:
+        for instance in scene.instances:
 
+            #Set the 3d Objects Rotation
             model_transform = pyrr.matrix44.create_identity(dtype=np.float32)
             model_transform = pyrr.matrix44.multiply(
                 m1=model_transform, 
                 m2=pyrr.matrix44.create_from_eulers(
-                    eulers=np.radians(cube.eulers), dtype=np.float32
+                    eulers=np.radians(instance.rotation), dtype=np.float32
                 )
             )
+
+            #Set the 3d Objects Position
             model_transform = pyrr.matrix44.multiply(
                 m1=model_transform, 
                 m2=pyrr.matrix44.create_from_translation(
-                    vec=np.array(cube.position),dtype=np.float32
+                    vec=np.array(instance.position),dtype=np.float32
                 )
             )
             glUniformMatrix4fv(self.modelMatrixLocation,1,GL_FALSE,model_transform)
-            self.gundam_texture.use()
-            glBindVertexArray(self.cube_mesh.vao)
-            glDrawArrays(GL_TRIANGLES, 0, self.cube_mesh.vertex_count)
+
+            #Use the 3d Objects Texture as a Material
+            instance.texture.use()
+
+            #Render the 3d Object
+            glBindVertexArray(instance.mesh.vao)
+            glDrawArrays(GL_TRIANGLES, 0, instance.mesh.vertex_count)
 
             glFlush()
 
     #Kill the Engine
-    def quit(self):
-        
-        #Destroy the Cube
-        self.cube_mesh.destroy()
+    def quit(self, scene):
 
-        #Destory the Gundam Texture
-        self.gundam_texture.destroy()
+        #Destroy all 3d objects that exist in the Scene
+        for instance in scene.instances:
+        
+            #Destroy the 3d Object
+            instance.mesh.destroy()
+
+            #Destory the Texture
+            instance.texture.destroy()
 
         #Destroy the Shader
         glDeleteProgram(self.shader)
