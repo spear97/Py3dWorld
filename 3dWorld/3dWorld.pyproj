@@ -21,7 +21,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Parameters.py" />
     <Compile Include="GraphicsEngine.py" />
     <Compile Include="Light.py" />
     <Compile Include="Main.py" />

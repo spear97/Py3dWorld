@@ -38,5 +38,3 @@ class Player:
 
         #Calucate the Up Vector for the Player
         self.up = np.cross(self.right, self.forwards)
-
-

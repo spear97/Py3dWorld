@@ -1,4 +1,4 @@
-from Parameters import Parameters
+from Cube import Cube
 from Player import Player
 from Light import Light
 import numpy as np
@@ -9,13 +9,20 @@ class Scene:
     #The Constructor for 3d Environments
     def __init__(self):
 
-        #The Positions where 3d Objects will be Spawn with which Rotation
-        self.instances = [
-            Parameters(position = [6,0,0], rotation = [0,0,0], mesh_filename='Models/Cube.obj', img_filename='Images/Barbatos.png')
+        #The 3d Objects that will be rendered in the Environment
+        self.cubes = [
+            Cube(
+                position = [6,0,0],
+                eulers = [0,0,0]
+            )
         ]
 
         self.lights = [
-            Light( position = [4, 0, 2], color = [1, 1, 1], strength=3)
+            Light(
+                position = [4, 0, 2],
+                color = [1, 1, 1],
+                strength=3
+                )
         ]
 
         #The Player that will navigate the environment
@@ -61,4 +68,3 @@ class Scene:
 
         #Update the Up, Right, and Forward Vectors of the Player
         self.player.update_vectors()
-

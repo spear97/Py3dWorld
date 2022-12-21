@@ -227,7 +227,7 @@ class Program:
 
     #Kill the Program
     def quit(self):
-        self.renderer.quit(self.scene)
+        self.renderer.quit()
 
 #If set as Start-up File, Start Engine
 if __name__ == '__main__':

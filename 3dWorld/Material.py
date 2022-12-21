@@ -26,4 +26,3 @@ class Material:
 
     def destroy(self):
         glDeleteTextures(1, (self.texture,))
-
