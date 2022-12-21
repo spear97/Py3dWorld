@@ -14,7 +14,6 @@ class Scene:
             Parameters(position = [6,0,0], rotation = [0,0,0], mesh_filename='Models/Cube.obj', img_filename='Images/Barbatos.png')
         ]
 
-        #The Lights that will illuminate the Environment
         self.lights = [
             Light( position = [4, 0, 2], color = [1, 1, 1], strength=3)
         ]
@@ -25,7 +24,6 @@ class Scene:
     #Update all Objects that exist in the Environment
     def update(self, rate):
 
-        '''
         #Rotate each object that exists in the environment
         for cube in self.cubes:
 
@@ -35,8 +33,6 @@ class Scene:
             #If Yaw exceed 360, then reset it back to 0
             if cube.eulers[1] > 360:
                 cube.eulers[1] -= 360
-        '''
-        pass
     
     #Move the Player towards a given Vector Position in the Environment
     def move_player(self, dPos):
